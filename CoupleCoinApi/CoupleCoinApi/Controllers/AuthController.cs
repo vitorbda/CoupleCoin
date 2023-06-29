@@ -1,6 +1,7 @@
 ﻿using CoupleCoinApi.Models;
 using CoupleCoinApi.Repositories.Interfaces;
 using CoupleCoinApi.Services;
+using CoupleCoinApi.Services.Interfaces;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 
@@ -10,81 +11,26 @@ namespace CoupleCoinApi.Controllers
     public class AuthController : Controller
     {
         #region Dependency Injection
-        private readonly IUserRepository _userRepository;
-        #endregion
-                
-        public AuthController(IUserRepository userRepository)
+        private readonly ILoginService _loginService;
+
+        public AuthController(ILoginService loginService)
         {
-            _userRepository = userRepository;
+            _loginService = loginService;
         }
+        #endregion
+
 
         [HttpPost]
         [Route("login")]
         [AllowAnonymous]
         public async Task<ActionResult<dynamic>> Login([FromBody] LoginModel login)
         {
-            User user = ValidateUser(login);
+            var token = _loginService.Login(login);
 
-            if (string.IsNullOrEmpty(user.UserName)) 
+            if (string.IsNullOrEmpty(token))
                 return Unauthorized(new { message = "Usuário ou senha inválidos!" });
 
-            var token = TokenService.GenerateToken(user);
-
-            UserModel userModel = ConvertUserToUserModel(user);
-
             return Ok(new { token = token });
-        }
-
-        private User ValidateUser(LoginModel login)
-        {
-            User voidUser = new User();
-
-            if (string.IsNullOrEmpty(login.UserName) || string.IsNullOrEmpty(login.Password))
-                return voidUser;
-
-            var user = _userRepository.GetUserByUserName(login.UserName);
-
-            if (user == null || user.IsActive == false)
-                return voidUser;
-
-            string hashPassword = EncryptService.ConvertToSHA256Hash(login.Password);
-
-            if (user.Password == hashPassword)
-                return user;
-
-            return voidUser;
-        }
-
-        private UserModel ConvertUserToUserModel(User user)
-        {
-            try
-            {
-                return new UserModel
-                {
-                    Id = user.Id,
-                    UserName = user.UserName,
-                    Role = user.Role
-                };                
-            }
-            catch
-            {
-                return null;
-            }
-        }
-
-        #region Models
-        public class LoginModel
-        {
-            public string UserName { get; set; }
-            public string Password { get; set; }
-        }
-
-        public class UserModel
-        {
-            public int Id { get; set; }
-            public string UserName { get; set; }
-            public string Role { get; set; }
-        }
-        #endregion
+        }               
     }
 }

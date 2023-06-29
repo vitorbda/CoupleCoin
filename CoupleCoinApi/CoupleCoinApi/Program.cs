@@ -2,6 +2,8 @@ using CoupleCoinApi;
 using CoupleCoinApi.dbContext;
 using CoupleCoinApi.Repositories;
 using CoupleCoinApi.Repositories.Interfaces;
+using CoupleCoinApi.Services;
+using CoupleCoinApi.Services.Interfaces;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.IdentityModel.Tokens;
@@ -16,8 +18,6 @@ builder.Services.AddDbContext<AppDbContext>(options =>
 
 builder.Services.AddCors();
 builder.Services.AddControllers();
-
-
 
 #region Authentication
 var key = Encoding.ASCII.GetBytes(Settings.Secret);
@@ -43,6 +43,7 @@ builder.Services.AddAuthentication(x =>
 #region Dependency Injection
 
 builder.Services.AddScoped<IUserRepository, UserRepository>();
+builder.Services.AddScoped<ILoginService, LoginService>();
 
 #endregion
 
