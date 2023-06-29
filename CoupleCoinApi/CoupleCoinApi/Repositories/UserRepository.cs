@@ -11,7 +11,7 @@ namespace CoupleCoinApi.Repositories
         public UserRepository(AppDbContext context)
         {
             _context = context;
-        }
+        }        
 
         public User? GetUserByUserName(string userName)
         {

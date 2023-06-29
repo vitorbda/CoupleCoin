@@ -1,6 +1,4 @@
 ﻿using CoupleCoinApi.Models;
-using CoupleCoinApi.Repositories.Interfaces;
-using CoupleCoinApi.Services;
 using CoupleCoinApi.Services.Interfaces;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
@@ -31,6 +29,6 @@ namespace CoupleCoinApi.Controllers
                 return Unauthorized(new { message = "Usuário ou senha inválidos!" });
 
             return Ok(new { token = token });
-        }               
+        }
     }
 }

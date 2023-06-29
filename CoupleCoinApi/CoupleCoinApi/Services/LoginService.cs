@@ -10,7 +10,6 @@ namespace CoupleCoinApi.Services
     {
         #region Dependency Injection
         private readonly IUserRepository _userRepository;
-
         public LoginService(IUserRepository userRepository)
         {
             _userRepository = userRepository;
