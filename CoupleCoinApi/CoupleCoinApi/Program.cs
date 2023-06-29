@@ -44,6 +44,7 @@ builder.Services.AddAuthentication(x =>
 
 builder.Services.AddScoped<IUserRepository, UserRepository>();
 builder.Services.AddScoped<ILoginService, LoginService>();
+builder.Services.AddScoped<IRegisterService, RegisterService>();
 
 #endregion
 
