@@ -1,6 +1,6 @@
 ﻿using System.ComponentModel.DataAnnotations.Schema;
 
-namespace CoupleCoinApi.Models
+namespace CoupleCoinApi.Models.ViewModel
 {
     public class UserViewModel
     {

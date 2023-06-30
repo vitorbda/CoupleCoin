@@ -1,4 +1,5 @@
 ﻿using CoupleCoinApi.Models;
+using CoupleCoinApi.Models.ViewModel;
 
 namespace CoupleCoinApi.Services
 {

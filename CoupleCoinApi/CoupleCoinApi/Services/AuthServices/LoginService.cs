@@ -1,4 +1,5 @@
 ﻿using CoupleCoinApi.Models;
+using CoupleCoinApi.Models.ViewModel;
 using CoupleCoinApi.Repositories.Interfaces;
 using CoupleCoinApi.Services.AuthServices.Interfaces;
 using Microsoft.AspNetCore.Mvc;
