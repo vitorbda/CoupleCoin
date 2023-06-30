@@ -18,6 +18,9 @@ namespace CoupleCoinApi.Services
 
         public bool RegisterUser(User user)
         {
+            if (user == null || string.IsNullOrEmpty(user.UserName)) 
+                return false;
+
             user = SeedNewUser(user);
 
             return _userRepository.CreateUser(user);
@@ -26,6 +29,12 @@ namespace CoupleCoinApi.Services
         public ValidateRegisterModel ValidatePassword(string password)
         {
             var valid = new ValidateRegisterModel { Valid = false };
+
+            if (string.IsNullOrEmpty(password))
+            {
+                valid.Message = "Senha vazia!";
+                return valid;
+            }
 
             if (password.Length < 8)
             {
@@ -80,11 +89,11 @@ namespace CoupleCoinApi.Services
                 return new ValidateRegisterModel { Valid = false, Message = validatePassword.Message };
 
             var validateUsername = _userRepository.GetUserByUserName(user.UserName);
-            if (validateUsername != null)
+            if (validateUsername != null && !string.IsNullOrEmpty(validateUsername.UserName))
                 return new ValidateRegisterModel { Valid = false, Message = "Nome de usuário em uso!" };
 
             var validateEmail = _userRepository.GetUserByEmail(user.Email);
-            if (validateEmail != null)
+            if (validateEmail != null && !string.IsNullOrEmpty(validateEmail.Email))
                 return new ValidateRegisterModel { Valid = false, Message = "Email já utilizado!" };
 
             return new ValidateRegisterModel { Valid = true };
