@@ -16,14 +16,14 @@ namespace CoupleCoinApi.Services.AuthServices
         }
         #endregion
 
-        public bool RegisterUser(User user)
+        public bool RegisterUser(RegisterModel user)
         {
             if (user == null || string.IsNullOrEmpty(user.UserName))
                 return false;
 
-            user = SeedNewUser(user);
+            var userToReturn = SeedNewUser(user);
 
-            return _userRepository.CreateUser(user);
+            return _userRepository.CreateUser(userToReturn);
         }
 
         public ValidateRegisterModel ValidatePassword(string password)
@@ -71,18 +71,24 @@ namespace CoupleCoinApi.Services.AuthServices
             return valid;
         }
 
-        private User SeedNewUser(User user)
+        private User SeedNewUser(RegisterModel user)
         {
-            user.Id = 0;
-            user.IsActive = true;
-            user.CreateDate = DateTime.Now;
-            user.Role = "Test";
-            user.Password = EncryptService.ConvertToSHA256Hash(user.Password);
+            var userToReturn = new User
+            {
+                IsActive = true,
+                UserName = user.UserName,
+                AddDate = DateTime.Now,
+                Email = user.Email,
+                LastName = user.LastName,
+                Name = user.Name,
+                Password = EncryptService.ConvertToSHA256Hash(user.Password),
+                Role = ""
+            };
 
-            return user;
+            return userToReturn;
         }
 
-        public ValidateRegisterModel ValidateUser(User user)
+        public ValidateRegisterModel ValidateUser(RegisterModel user)
         {
             var validatePassword = ValidatePassword(user.Password);
             if (!validatePassword.Valid)

@@ -10,6 +10,14 @@ namespace CoupleCoinApiTest.Services.AuthServicesTests
         #region Constructor
         private readonly RegisterService _registerService;
         private readonly Mock<IUserRepository> mock = new Mock<IUserRepository>();
+        private readonly RegisterModel userRM = new RegisterModel
+        {
+            Email = "email@email.com",
+            LastName = "Test",
+            Name = "Test",
+            Password = "Test",
+            UserName = "Test"
+        };
         private readonly User user = new User
         {
             Id = 0,
@@ -35,7 +43,7 @@ namespace CoupleCoinApiTest.Services.AuthServicesTests
         [Fact]
         public void When_calling_the_RegisterUser_method_MUST_return_true()
         {
-            var testUser = user;
+            var testUser = userRM;
             var sucessfullyRegister = _registerService.RegisterUser(testUser);
 
             Assert.True(sucessfullyRegister);
@@ -44,7 +52,7 @@ namespace CoupleCoinApiTest.Services.AuthServicesTests
         [Fact]
         public void When_calling_the_RegisterUser_method_with_null_user_MUST_return_FALSE()
         {
-            var testUser = new User();
+            var testUser = new RegisterModel();
 
             var failedRegister = _registerService.RegisterUser(null);
             var failedRegister2 = _registerService.RegisterUser(testUser);
@@ -138,7 +146,7 @@ namespace CoupleCoinApiTest.Services.AuthServicesTests
             mock.Setup(_ => _.GetUserByUserName(It.IsAny<string>())).Returns(new User());
             mock.Setup(_ => _.GetUserByEmail(It.IsAny<string>())).Returns(new User());
 
-            var testUser = user;
+            var testUser = userRM;
             testUser.Password = "Adff1@#$%$";
 
             var testReturn = _registerService.ValidateUser(testUser);
@@ -151,7 +159,7 @@ namespace CoupleCoinApiTest.Services.AuthServicesTests
             mock.Setup(_ => _.GetUserByUserName(It.IsAny<string>())).Returns(user);
             mock.Setup(_ => _.GetUserByEmail(It.IsAny<string>())).Returns(user);
 
-            var testUser = user;
+            var testUser = userRM;
 
             var testReturn = _registerService.ValidateUser(testUser);
 

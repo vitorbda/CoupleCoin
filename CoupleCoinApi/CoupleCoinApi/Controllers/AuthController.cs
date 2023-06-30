@@ -40,7 +40,7 @@ namespace CoupleCoinApi.Controllers
         [HttpPost]
         [Route("register")]
         [AllowAnonymous]
-        public IActionResult Register([FromBody] User user)
+        public IActionResult Register([FromBody] RegisterModel user)
         {
             if (!ModelState.IsValid)
                 return BadRequest(ModelState);

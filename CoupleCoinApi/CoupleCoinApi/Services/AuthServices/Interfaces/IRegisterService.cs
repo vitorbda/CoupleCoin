@@ -4,8 +4,8 @@ namespace CoupleCoinApi.Services.AuthServices.Interfaces
 {
     public interface IRegisterService
     {
-        bool RegisterUser(User user);
+        bool RegisterUser(RegisterModel user);
         ValidateRegisterModel ValidatePassword(string password);
-        ValidateRegisterModel ValidateUser(User user);
+        ValidateRegisterModel ValidateUser(RegisterModel user);
     }
 }
