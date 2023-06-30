@@ -22,10 +22,11 @@ namespace CoupleCoinApi.Models
         [Required]
         [StringLength(50)]
         public string Password { get; set; }
-        [StringLength(11)]        
+        [StringLength(11)]
         public string? CPF { get; set; }
         public string? Role { get; set; }
-        public DateTime? CreateDate { get; set; }
+        public DateTime? AddDate { get; set; }
+        public DateTime? AlterDate { get; set; }
         [Required]
         public bool IsActive { get; set; }        
     }
