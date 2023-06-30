@@ -18,18 +18,18 @@ namespace CoupleCoinApiTest.Services.AuthServicesTests
             Name = "Test",
             Password = "53-2E-AA-BD-95-74-88-0D-BF-76-B9-B8-CC-00-83-2C-20-A6-EC-11-3D-68-22-99-55-0D-7A-6E-0F-34-5E-25",
             Role = "Test",
-            UserName = "Test"
+            UserName = "Test"            
         };
         private readonly Mock<IUserRepository> mock = new Mock<IUserRepository>();
         public LoginServiceTests()
         {
             _loginService = new LoginService(mock.Object);
-            mock.Setup(_ => _.GetUserByUserName(It.IsAny<string>())).Returns(user);
+            mock.Setup(_ => _.GetActiveUserByUserName(It.IsAny<string>())).Returns(user);
         }
         #endregion
 
         [Fact]
-        public void When_calling_login_method_SHOULD_return_the_token()
+        public void When_calling_login_method_with_correct_data_SHOULD_return_the_token()
         {
             LoginModel lmTest = new LoginModel { Password = "Test", UserName = "Test" };
 
@@ -39,7 +39,7 @@ namespace CoupleCoinApiTest.Services.AuthServicesTests
         }
 
         [Fact]
-        public void When_calling_login_method_MUST_NOT_return_the_token()
+        public void When_calling_login_method_withou_correct_data_MUST_NOT_return_the_token()
         {
             LoginModel lmTest = new LoginModel { Password = "Test1", UserName = "Test" };
 

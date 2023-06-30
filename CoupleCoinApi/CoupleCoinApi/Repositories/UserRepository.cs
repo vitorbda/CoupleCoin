@@ -39,6 +39,10 @@ namespace CoupleCoinApi.Repositories
             return _context.User.FirstOrDefault(_ => _.UserName == userName);
         }
 
-
+        public User GetActiveUserByUserName(string userName)
+        {
+            return _context.User.Where(_ => _.UserName == userName && _.IsActive == true).FirstOrDefault();
+                                
+        }
     }
 }

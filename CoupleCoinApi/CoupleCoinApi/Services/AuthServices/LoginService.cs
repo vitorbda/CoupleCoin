@@ -35,7 +35,7 @@ namespace CoupleCoinApi.Services.AuthServices
             if (string.IsNullOrEmpty(login.UserName) || string.IsNullOrEmpty(login.Password))
                 return voidUser;
 
-            var user = _userRepository.GetUserByUserName(login.UserName);
+            var user = _userRepository.GetActiveUserByUserName(login.UserName);
 
             if (user == null || user.IsActive == false)
                 return voidUser;
