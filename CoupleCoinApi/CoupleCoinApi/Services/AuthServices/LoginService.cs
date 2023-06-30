@@ -16,16 +16,18 @@ namespace CoupleCoinApi.Services.AuthServices
         }
         #endregion
 
-        public string Login(LoginModel login)
+        public UserViewModel Login(LoginModel login)
         {
-            User user = ValidateUser(login);
+            var user = ValidateUser(login);
 
             if (string.IsNullOrEmpty(user.UserName))
-                return "";
+                return new UserViewModel();
 
-            var token = TokenService.GenerateToken(user);
+            var userToReturn = ConvertUserService.ConvertUserToUserViewModel(user);
 
-            return token;
+            userToReturn.Token = TokenService.GenerateToken(user);
+
+            return userToReturn;
         }
 
         public User ValidateUser(LoginModel login)

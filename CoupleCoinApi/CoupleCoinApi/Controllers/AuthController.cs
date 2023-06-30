@@ -29,12 +29,12 @@ namespace CoupleCoinApi.Controllers
         [AllowAnonymous]
         public async Task<ActionResult<dynamic>> Login([FromBody] LoginModel login)
         {
-            var token = _loginService.Login(login);
+            var user = _loginService.Login(login);
 
-            if (string.IsNullOrEmpty(token))
+            if (string.IsNullOrEmpty(user.UserName))
                 return Unauthorized(new { message = "Usuário ou senha inválidos!" });
 
-            return Ok(token);
+            return Ok(user);
         }
 
         [HttpPost]

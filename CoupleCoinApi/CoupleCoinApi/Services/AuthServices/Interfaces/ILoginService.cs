@@ -4,7 +4,7 @@ namespace CoupleCoinApi.Services.AuthServices.Interfaces
 {
     public interface ILoginService
     {
-        string Login(LoginModel loginModel);
+        UserViewModel Login(LoginModel loginModel);
         User ValidateUser(LoginModel loginModel);
     }
 }

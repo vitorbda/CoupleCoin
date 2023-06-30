@@ -12,7 +12,7 @@ namespace CoupleCoinApiTest.Services.AuthServicesTests
         private readonly User user = new User
         {
             Id = 0,
-            Email = "",
+            Email = "email@email.com",
             IsActive = true,
             LastName = "Test",
             Name = "Test",
@@ -20,6 +20,10 @@ namespace CoupleCoinApiTest.Services.AuthServicesTests
             Role = "Test",
             UserName = "Test"            
         };
+        private readonly UserViewModel userVM = new UserViewModel { UserName = "Test",
+                                                                    Name = "Test",
+                                                                    Email = "email@email.com",
+                                                                    LastName = "Test"};
         private readonly Mock<IUserRepository> mock = new Mock<IUserRepository>();
         public LoginServiceTests()
         {
@@ -33,19 +37,24 @@ namespace CoupleCoinApiTest.Services.AuthServicesTests
         {
             LoginModel lmTest = new LoginModel { Password = "Test", UserName = "Test" };
 
-            var token = _loginService.Login(lmTest);
+            var userVMToReturn = _loginService.Login(lmTest);
 
-            Assert.False(string.IsNullOrEmpty(token));
+            Assert.Equal(userVM.UserName, userVMToReturn.UserName);
+            Assert.Equal(userVM.Name, userVMToReturn.Name);
+            Assert.Equal(userVM.LastName, userVMToReturn.LastName);
+            Assert.Equal(userVM.Email, userVMToReturn.Email);
+            Assert.True(!string.IsNullOrEmpty(userVMToReturn.Token));
         }
 
         [Fact]
-        public void When_calling_login_method_withou_correct_data_MUST_NOT_return_the_token()
+        public void When_calling_login_method_without_correct_data_MUST_NOT_return_the_token()
         {
             LoginModel lmTest = new LoginModel { Password = "Test1", UserName = "Test" };
 
-            var token = _loginService.Login(lmTest);
+            var userVMToReturn = _loginService.Login(lmTest);
 
-            Assert.True(string.IsNullOrEmpty(token));
+            Assert.True(string.IsNullOrEmpty(userVMToReturn.UserName));
+            Assert.True(string.IsNullOrEmpty(userVMToReturn.Token));
         }
 
         [Fact]
