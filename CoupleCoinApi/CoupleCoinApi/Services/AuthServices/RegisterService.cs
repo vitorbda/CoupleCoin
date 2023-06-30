@@ -1,10 +1,10 @@
 ﻿using CoupleCoinApi.Models;
 using CoupleCoinApi.Repositories.Interfaces;
-using CoupleCoinApi.Services.Interfaces;
+using CoupleCoinApi.Services.AuthServices.Interfaces;
 using System.Text.RegularExpressions;
 using XAct.Messages;
 
-namespace CoupleCoinApi.Services
+namespace CoupleCoinApi.Services.AuthServices
 {
     public class RegisterService : IRegisterService
     {
@@ -18,7 +18,7 @@ namespace CoupleCoinApi.Services
 
         public bool RegisterUser(User user)
         {
-            if (user == null || string.IsNullOrEmpty(user.UserName)) 
+            if (user == null || string.IsNullOrEmpty(user.UserName))
                 return false;
 
             user = SeedNewUser(user);
@@ -80,7 +80,7 @@ namespace CoupleCoinApi.Services
             user.Password = EncryptService.ConvertToSHA256Hash(user.Password);
 
             return user;
-        }            
+        }
 
         public ValidateRegisterModel ValidateUser(User user)
         {

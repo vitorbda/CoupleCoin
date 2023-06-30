@@ -1,6 +1,6 @@
 ﻿using CoupleCoinApi.Models;
 
-namespace CoupleCoinApi.Services.Interfaces
+namespace CoupleCoinApi.Services.AuthServices.Interfaces
 {
     public interface ILoginService
     {

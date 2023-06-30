@@ -1,9 +1,9 @@
 ﻿using CoupleCoinApi.Models;
 using CoupleCoinApi.Repositories.Interfaces;
-using CoupleCoinApi.Services;
+using CoupleCoinApi.Services.AuthServices;
 using Moq;
 
-namespace CoupleCoinApiTest.Services
+namespace CoupleCoinApiTest.Services.AuthServicesTests
 {
     public class RegisterServiceTests
     {
@@ -22,7 +22,7 @@ namespace CoupleCoinApiTest.Services
             UserName = "Test"
         };
 
-        public RegisterServiceTests() 
+        public RegisterServiceTests()
         {
             _registerService = new RegisterService(mock.Object);
             mock.Setup(_ => _.CreateUser(It.IsAny<User>())).Returns(true);

@@ -1,6 +1,6 @@
 ﻿using CoupleCoinApi.Models;
 using CoupleCoinApi.Repositories.Interfaces;
-using CoupleCoinApi.Services.Interfaces;
+using CoupleCoinApi.Services.AuthServices.Interfaces;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 
