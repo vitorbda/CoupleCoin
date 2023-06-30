@@ -72,5 +72,22 @@ namespace CoupleCoinApi.Services
 
             return user;
         }            
+
+        public ValidateRegisterModel ValidateUser(User user)
+        {
+            var validatePassword = ValidatePassword(user.Password);
+            if (!validatePassword.Valid)
+                return new ValidateRegisterModel { Valid = false, Message = validatePassword.Message };
+
+            var validateUsername = _userRepository.GetUserByUserName(user.UserName);
+            if (validateUsername != null)
+                return new ValidateRegisterModel { Valid = false, Message = "Nome de usuário em uso!" };
+
+            var validateEmail = _userRepository.GetUserByEmail(user.Email);
+            if (validateEmail != null)
+                return new ValidateRegisterModel { Valid = false, Message = "Email já utilizado!" };
+
+            return new ValidateRegisterModel { Valid = true };
+        }
     }
 }

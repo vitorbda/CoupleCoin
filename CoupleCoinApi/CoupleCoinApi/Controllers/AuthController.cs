@@ -45,17 +45,9 @@ namespace CoupleCoinApi.Controllers
             if (!ModelState.IsValid)
                 return BadRequest(ModelState);
 
-            var validatePassword = _registerService.ValidatePassword(user.Password);
-            if (!validatePassword.Valid)            
-                return BadRequest(validatePassword.Message);
-
-            var validateUsername = _userRepository.GetUserByUserName(user.UserName);
-            if (validateUsername != null)
-                return BadRequest("Nome de usuário em uso!");
-            
-            var validateEmail = _userRepository.GetUserByEmail(user.Email);
-            if (validateEmail != null)
-                return BadRequest("Email já utilizado!");
+            var validateUser = _registerService.ValidateUser(user);
+            if (validateUser.Valid == false)
+                return BadRequest(validateUser.Message);
 
             var successfullyRegistered = _registerService.RegisterUser(user);
             if (!successfullyRegistered)
