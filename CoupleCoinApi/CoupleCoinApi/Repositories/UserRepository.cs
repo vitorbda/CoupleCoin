@@ -14,6 +14,7 @@ namespace CoupleCoinApi.Repositories
             _context = context;
         }
         #endregion
+
         public bool CreateUser(User user)
         {
             try
