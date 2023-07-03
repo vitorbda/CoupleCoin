@@ -23,5 +23,13 @@ namespace CoupleCoinApi.Controllers
         {
             throw new NotImplementedException();
         }
+
+        [HttpPost]
+        [Route("registerExpenseType")]
+        [Authorize]
+        public IActionResult RegisterExpenseType(int id)
+        {
+            throw new NotImplementedException();
+        }
     }
 }
