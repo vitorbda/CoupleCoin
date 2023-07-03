@@ -1,15 +1,43 @@
-﻿namespace CoupleCoinApi.Controllers
+﻿using CoupleCoinApi.Services.CoupleServices.Interfaces;
+using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Mvc;
+
+namespace CoupleCoinApi.Controllers
 {
-    public class CoupleController
+    [Route("v1/couple")]
+    public class CoupleController : Controller
     {
-        public bool CreateCouple(int idCouple1, int idCouple2)
-        {
-            throw new NotImplementedException ();
+        private readonly ICoupleService _coupleService;
+        public CoupleController(ICoupleService coupleService) 
+        { 
+            _coupleService = coupleService;
         }
 
-        public bool UpdateCouple(int idCouple1)
+        [HttpPost]
+        [Route("registerCouple")]
+        [Authorize]
+        public IActionResult RegisterCouple(string userNameToCouple)
         {
-            throw new NotImplementedException ();
+            if (string.IsNullOrEmpty(userNameToCouple))
+                return BadRequest("Usuário para colaboração não pode ser vazio!");
+
+            var userName = User.Identity.Name;
+
+            var userIsValid = _coupleService.ValidateUserToCouple(userNameToCouple);
+            if (!userIsValid.Valid)
+                return BadRequest(userIsValid.Message);
+
+            var coupleExists = _coupleService.VerifiyExistentCouple(userName, userNameToCouple);
+            if (!coupleExists.Valid)
+                return BadRequest(coupleExists.Message);
+
+            var coupleWasCreated = _coupleService.CreateCouple(userName, userNameToCouple);
+            if (!coupleWasCreated)
+                return StatusCode(500);
+
+            return Created("/", "Vínculo cirado com sucesso!");
         }
+
+        
     }
 }

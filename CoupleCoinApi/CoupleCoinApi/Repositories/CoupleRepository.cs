@@ -35,6 +35,17 @@ namespace CoupleCoinApi.Repositories
             }
         }
 
+        public Couple GetActiveCoupleByTwoUserName(string userName1, string userName2)
+        {
+            var couple = _context.Couple
+                .Where(_ => (_.User1.UserName == userName1 || _.User2.UserName == userName1)
+                            && (_.User1.UserName == userName2 || _.User2.UserName == userName2))
+                .Where(_ => _.IsActive == true)
+                .FirstOrDefault();
+
+            return couple;
+        }
+
         public Couple GetActiveCoupleByUser(User user)
         {
             var couple = _context.Couple
@@ -45,16 +56,17 @@ namespace CoupleCoinApi.Repositories
             return couple;
         }       
 
-        public Couple GetActiveCoupleByUsername(string username)
+        public Couple GetActiveCoupleByUsername(string userName)
         {
             var couple = _context.Couple
                 .Include(c => c.User1)
-                .Where(c => c.User1.UserName == username || c.User2.UserName == username)
+                .Where(c => c.User1.UserName == userName || c.User2.UserName == userName)
                 .Where(_ => _.IsActive == true)
                 .FirstOrDefault();
 
             return couple;
         }
+
 
     }
 }

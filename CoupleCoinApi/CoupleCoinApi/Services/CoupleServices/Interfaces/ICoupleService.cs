@@ -4,7 +4,8 @@ namespace CoupleCoinApi.Services.CoupleServices.Interfaces
 {
     public interface ICoupleService
     {
-        ValidateRegisterModel ValidateUserToCouple(User user);
-        bool CreateCouple (User user, User user2);
+        ValidateRegisterModel ValidateUserToCouple(string userName);
+        bool CreateCouple (string userName1, string userName2);
+        ValidateRegisterModel VerifiyExistentCouple (string userName1, string userName2);
     }
 }

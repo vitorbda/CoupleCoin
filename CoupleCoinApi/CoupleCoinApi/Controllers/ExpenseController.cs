@@ -20,7 +20,7 @@ namespace CoupleCoinApi.Controllers
         [Route("getExpense")]
         [Authorize]
         public IActionResult GetExpense(int id)
-        {
+        {            
             throw new NotImplementedException();
         }
 
