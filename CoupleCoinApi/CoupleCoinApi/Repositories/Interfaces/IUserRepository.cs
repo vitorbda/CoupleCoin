@@ -8,5 +8,6 @@ namespace CoupleCoinApi.Repositories.Interfaces
         User GetActiveUserByUserName(string userName);
         bool CreateUser(User user);
         User GetUserByEmail(string email);
+        bool UpdateUser (User user);
     }
 }

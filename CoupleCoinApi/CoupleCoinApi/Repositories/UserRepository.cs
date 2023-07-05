@@ -44,5 +44,21 @@ namespace CoupleCoinApi.Repositories
             return _context.User.Where(_ => _.UserName == userName && _.IsActive == true).FirstOrDefault();
                                 
         }
+
+        public bool UpdateUser(User user)
+        {
+            try
+            {
+                var userToUpdate = this.GetUserByUserName(user.UserName);
+                userToUpdate = user;
+                _context.SaveChanges();
+
+                return true;
+            }
+            catch
+            {
+                return false;
+            }
+        }
     }
 }

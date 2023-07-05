@@ -3,5 +3,7 @@
     public interface IUserService
     {
         bool VerifyIfUserIsActiveByUsername(string username);
+        bool VerifyPassword(string password, string username);
+        bool ChangePassword(string newPassword, string username);
     }
 }

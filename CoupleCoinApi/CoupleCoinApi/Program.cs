@@ -6,6 +6,8 @@ using CoupleCoinApi.Services.AuthServices;
 using CoupleCoinApi.Services.AuthServices.Interfaces;
 using CoupleCoinApi.Services.CoupleServices;
 using CoupleCoinApi.Services.CoupleServices.Interfaces;
+using CoupleCoinApi.Services.UserServices;
+using CoupleCoinApi.Services.UserServices.Interfaces;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.IdentityModel.Tokens;
@@ -49,6 +51,7 @@ builder.Services.AddScoped<ILoginService, LoginService>();
 builder.Services.AddScoped<IRegisterService, RegisterService>();
 builder.Services.AddScoped<ICoupleService, CoupleService>();
 builder.Services.AddScoped<ICoupleRepository, CoupleRepository>();
+builder.Services.AddScoped<IUserService, UserService>();
 
 #endregion
 
