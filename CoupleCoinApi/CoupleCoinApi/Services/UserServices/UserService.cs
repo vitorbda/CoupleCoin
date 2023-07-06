@@ -13,6 +13,7 @@ namespace CoupleCoinApi.Services.UserServices
         {
             _userRepository = userRepository;
         }
+        #endregion
 
         public bool ChangePassword(string newPassword, string username)
         {
@@ -28,15 +29,14 @@ namespace CoupleCoinApi.Services.UserServices
 
             return true;
         }
-        #endregion
-
+        
         public bool VerifyIfUserIsActiveByUsername(string username)
         {
             if (string.IsNullOrEmpty(username))
                 return false;
 
             var userIsActive = _userRepository.GetActiveUserByUserName(username);
-            if (userIsActive == null || string.IsNullOrEmpty(userIsActive.Id.ToString())) 
+            if (userIsActive == null || string.IsNullOrEmpty(userIsActive.UserName)) 
                 return false;
 
             return true;
@@ -45,8 +45,7 @@ namespace CoupleCoinApi.Services.UserServices
         public bool VerifyPassword(string password, string username)
         {            
             var userToVerify = _userRepository.GetActiveUserByUserName(username);
-            var userIsValid = VerifyObjectService.VerifyObject(userToVerify);
-            if (!userIsValid)
+            if (userToVerify == null || string.IsNullOrEmpty(userToVerify.UserName))
                 return false;
 
             password = EncryptService.ConvertToSHA256Hash(password);
