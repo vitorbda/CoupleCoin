@@ -44,12 +44,45 @@ namespace CoupleCoinApi.Controllers
             return Ok("Senha alterada com sucesso!");
         }
 
+        [HttpPut]
+        [Route("changeEmail")]
+        [Authorize]
+        public IActionResult ChangeEmail([FromBody]userEmail userEmail)
+        {
+            if (!ModelState.IsValid)
+                return BadRequest(ModelState);
+
+            var user = User.Identity.Name;
+            var verifyPassword = _userService.VerifyPassword(userEmail.Password, user);
+            if (!verifyPassword)
+                return BadRequest("Senha incorreta!");
+
+            var verifyEmail = _userService.VerifyEmail(userEmail.NewEmail);
+            if (!verifyEmail)
+                return BadRequest("Email já está em uso!");
+
+            var emailChanged = _userService.ChangeEmail(userEmail.NewEmail, user);
+            if (!emailChanged)
+                return StatusCode(500);
+
+            return Ok("Email alterado com sucesso");
+        }
+
         public class userPassword
         {
             [Required]
             public string ConfirmPassword { get; set; }
             [Required]
             public string NewPassword { get; set; }
+        }
+        public class userEmail
+        {
+            [Required]
+            public string ConfirmEmail { get; set; }
+            [Required]
+            public string NewEmail { get; set; }
+            [Required]
+            public string Password { get; set; }
         }
     }
 }

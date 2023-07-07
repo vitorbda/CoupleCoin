@@ -13,6 +13,17 @@ namespace CoupleCoinApi.Services.UserServices
         {
             _userRepository = userRepository;
         }
+
+        public bool ChangeEmail(string newEmail, string username)
+        {
+            var user = _userRepository.GetActiveUserByUserName(username);
+
+            user.Email = newEmail;
+            user.EmailConfirmed = false;
+
+            var userChanged = _userRepository.UpdateUser(user);
+            return userChanged;
+        }
         #endregion
 
         public bool ChangePassword(string newPassword, string username)
@@ -24,12 +35,18 @@ namespace CoupleCoinApi.Services.UserServices
 
             var passwordChanged = _userRepository.UpdateUser(user);
 
-            if (!passwordChanged)
+            return passwordChanged;
+        }
+
+        public bool VerifyEmail(string newEmail)
+        {
+            var verifyEmail = _userRepository.GetUserByEmail(newEmail);
+            if (verifyEmail.UserName != null)
                 return false;
 
             return true;
         }
-        
+
         public bool VerifyIfUserIsActiveByUsername(string username)
         {
             if (string.IsNullOrEmpty(username))

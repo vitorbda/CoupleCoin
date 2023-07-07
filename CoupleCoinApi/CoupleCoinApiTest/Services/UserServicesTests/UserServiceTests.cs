@@ -27,6 +27,7 @@ namespace CoupleCoinApiTest.Services.UserServicesTests
             _userService = new UserService(mockUserRepository.Object);
 
             mockUserRepository.Setup(_ => _.GetActiveUserByUserName(It.IsAny<string>())).Returns(validUser);
+            mockUserRepository.Setup(_ => _.GetUserByEmail(It.IsAny<string>())).Returns(validUser);
         }
         #endregion
 
@@ -72,7 +73,7 @@ namespace CoupleCoinApiTest.Services.UserServicesTests
         }
         #endregion
 
-        #region VerifyPassword
+        #region VerifyPassword method
         [Fact]
         public void When_call_VerifyPassword_method_with_valid_parameters_return_TRUE()
         {
@@ -98,6 +99,45 @@ namespace CoupleCoinApiTest.Services.UserServicesTests
             Assert.False(testMethod2);
         }
 
+        #endregion
+
+        #region VerifyEmail method
+        [Fact]
+        public void When_call_VerifyEmail_method_with_new_email_NOT_USED_return_TRUE()
+        {
+            var emailTest = "Test@test.com";
+
+            mockUserRepository.Setup(_ => _.GetUserByEmail(It.IsAny<string>())).Returns(new User());
+
+            var testMethod = _userService.VerifyEmail(emailTest);
+
+            Assert.True(testMethod);
+        }
+
+        [Fact]
+        public void When_call_VerifyEmail_method_with_new_email_IS_USE_return_FALSE()
+        {
+            var emailTest = "Test@test.com";
+
+            var testMethod = _userService.VerifyEmail(emailTest);
+
+            Assert.False(testMethod);
+        }
+        #endregion
+
+        #region ChangeEmail method
+        [Fact]
+        public void When_call_ChangeEmail_method_with_valid_parameters_return_TRUE()
+        {
+            var username = "Test";
+            var newEmail = "test@test.com";
+
+            mockUserRepository.Setup(_ => _.UpdateUser(It.IsAny<User>())).Returns(true);
+
+            var testMethod = _userService.ChangeEmail(newEmail, username);
+
+            Assert.True(testMethod);
+        }
         #endregion
     }
 }
