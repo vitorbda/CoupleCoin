@@ -38,7 +38,7 @@ namespace CoupleCoinApi.Services.UserServices
             return passwordChanged;
         }
 
-        public bool VerifyEmail(string newEmail)
+        public async Task<bool> VerifyEmail(string newEmail)
         {
             var verifyEmail = _userRepository.GetUserByEmail(newEmail);
             if (verifyEmail.UserName != null)
@@ -47,7 +47,7 @@ namespace CoupleCoinApi.Services.UserServices
             return true;
         }
 
-        public bool VerifyIfUserIsActiveByUsername(string username)
+        public async Task<bool> VerifyIfUserIsActiveByUsername(string username)
         {
             if (string.IsNullOrEmpty(username))
                 return false;
@@ -59,7 +59,7 @@ namespace CoupleCoinApi.Services.UserServices
             return true;
         }
 
-        public bool VerifyPassword(string password, string username)
+        public async Task<bool> VerifyPassword(string password, string username)
         {            
             var userToVerify = _userRepository.GetActiveUserByUserName(username);
             if (userToVerify == null || string.IsNullOrEmpty(userToVerify.UserName))

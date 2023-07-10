@@ -30,7 +30,7 @@ namespace CoupleCoinApi.Services.CoupleServices
             return true;
         }
 
-        public ValidateRegisterModel ValidateUserToCouple(string userName)
+        public async Task<ValidateRegisterModel> ValidateUserToCouple(string userName)
         {
             var valid = new ValidateRegisterModel { Valid = false };
             var user = _userRepository.GetActiveUserByUserName(userName);
@@ -46,7 +46,7 @@ namespace CoupleCoinApi.Services.CoupleServices
             return valid;
         }
 
-        public ValidateRegisterModel VerifiyExistentCouple(string userName1, string userName2)
+        public async Task<ValidateRegisterModel> VerifiyExistentCouple(string userName1, string userName2)
         {
             var valid = new ValidateRegisterModel { Valid = false };
             var couple = _coupleRepository.GetActiveCoupleByTwoUserName(userName1, userName2);

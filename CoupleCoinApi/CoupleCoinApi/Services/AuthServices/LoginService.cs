@@ -2,6 +2,7 @@
 using CoupleCoinApi.Models.ViewModel;
 using CoupleCoinApi.Repositories.Interfaces;
 using CoupleCoinApi.Services.AuthServices.Interfaces;
+using CoupleCoinApi.Services.UserServices.Interfaces;
 using Microsoft.AspNetCore.Mvc;
 using static CoupleCoinApi.Controllers.AuthController;
 
@@ -11,15 +12,17 @@ namespace CoupleCoinApi.Services.AuthServices
     {
         #region Dependency Injection
         private readonly IUserRepository _userRepository;
-        public LoginService(IUserRepository userRepository)
+        private readonly IUserService _userService;
+        public LoginService(IUserRepository userRepository, IUserService userService)
         {
             _userRepository = userRepository;
+            _userService = userService;
         }
         #endregion
 
-        public UserViewModel Login(LoginModel login)
+        public async Task<UserViewModel> Login(LoginModel login)
         {
-            var user = ValidateUser(login);
+            var user = await ValidateUser(login);
 
             if (string.IsNullOrEmpty(user.UserName))
                 return new UserViewModel();
@@ -31,7 +34,7 @@ namespace CoupleCoinApi.Services.AuthServices
             return userToReturn;
         }
 
-        public User ValidateUser(LoginModel login)
+        public async Task<User> ValidateUser(LoginModel login)
         {
             User voidUser = new User();
 
@@ -40,12 +43,8 @@ namespace CoupleCoinApi.Services.AuthServices
 
             var user = _userRepository.GetActiveUserByUserName(login.UserName);
 
-            if (user == null || user.IsActive == false)
-                return voidUser;
-
-            string hashPassword = EncryptService.ConvertToSHA256Hash(login.Password);
-
-            if (user.Password == hashPassword)
+            var validatePassword = await _userService.VerifyPassword(login.Password, login.UserName);
+            if (validatePassword)
                 return user;
 
             return voidUser;

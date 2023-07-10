@@ -5,7 +5,7 @@ namespace CoupleCoinApi.Services.ExpenseServices.Interfaces
 {
     public interface IExpenseService
     {
-        ValidateRegisterModel VerifyCouple(ExpenseTypeDTO ETD);
+        Task<ValidateRegisterModel> VerifyCouple(ExpenseTypeDTO ETD);
         bool RegisterExpenseType(ExpenseTypeDTO ETD);
     }
 }

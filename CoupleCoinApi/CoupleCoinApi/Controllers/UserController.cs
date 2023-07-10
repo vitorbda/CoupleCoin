@@ -23,17 +23,21 @@ namespace CoupleCoinApi.Controllers
         [HttpPut]
         [Route("changePassword")]
         [Authorize]
-        public IActionResult ChangePassword([FromBody]userPassword userPassword)
+        public async Task<IActionResult> ChangePassword([FromBody]userPassword userPassword)
         {
             if (!ModelState.IsValid)
                 return BadRequest(ModelState);
 
             var user = User.Identity.Name;
-            var verifyPassword = _userService.VerifyPassword(userPassword.ConfirmPassword, user);
+            var verifyPasswordTask = _userService.VerifyPassword(userPassword.ConfirmPassword, user);
+            var passwordIsValidTask = _registerService.ValidatePassword(userPassword.NewPassword);
+
+            var verifyPassword = await verifyPasswordTask;
+            var passwordIsValid = await passwordIsValidTask;
+
             if (!verifyPassword)
                 return BadRequest("Senhas não conferem!");
-
-            var passwordIsValid = _registerService.ValidatePassword(userPassword.NewPassword);
+            
             if (!passwordIsValid.Valid)
                 return BadRequest(passwordIsValid.Message);
 
@@ -47,17 +51,21 @@ namespace CoupleCoinApi.Controllers
         [HttpPut]
         [Route("changeEmail")]
         [Authorize]
-        public IActionResult ChangeEmail([FromBody]userEmail userEmail)
+        public async Task<IActionResult> ChangeEmail([FromBody]userEmail userEmail)
         {
             if (!ModelState.IsValid)
                 return BadRequest(ModelState);
 
             var user = User.Identity.Name;
-            var verifyPassword = _userService.VerifyPassword(userEmail.Password, user);
+            var verifyPasswordTask = _userService.VerifyPassword(userEmail.Password, user);
+            var verifyEmailTask = _userService.VerifyEmail(userEmail.NewEmail);
+
+            var verifyPassword = await verifyPasswordTask;
+            var verifyEmail = await verifyEmailTask;
+
             if (!verifyPassword)
                 return BadRequest("Senha incorreta!");
 
-            var verifyEmail = _userService.VerifyEmail(userEmail.NewEmail);
             if (!verifyEmail)
                 return BadRequest("Email já está em uso!");
 

@@ -64,23 +64,23 @@ namespace CoupleCoinApiTest.Services.AuthServicesTests
 
         #region ValidatePassword Method
         [Fact]
-        public void When_calling_the_ValidatePassword_method_MUST_return_TRUE()
+        public async void When_calling_the_ValidatePassword_method_MUST_return_TRUE()
         {
             string goodPassword = "SenhaForte1!";
             string goodPassword2 = "2Abcd$ef";
             string goodPassword3 = "Strong#P4ss";
 
-            var testPassword = _registerService.ValidatePassword(goodPassword).Valid;
-            var testPassword2 = _registerService.ValidatePassword(goodPassword2).Valid;
-            var testPassword3 = _registerService.ValidatePassword(goodPassword3).Valid;
+            var testPassword = await _registerService.ValidatePassword(goodPassword);
+            var testPassword2 = await _registerService.ValidatePassword(goodPassword2);
+            var testPassword3 = await _registerService.ValidatePassword(goodPassword3);
 
-            Assert.True(testPassword);
-            Assert.True(testPassword2);
-            Assert.True(testPassword3);
+            Assert.True(testPassword.Valid);
+            Assert.True(testPassword2.Valid);
+            Assert.True(testPassword3.Valid);
         }
 
         [Fact]
-        public void When_calling_the_ValidatePassword_method_MUST_return_FALSE()
+        public async void When_calling_the_ValidatePassword_method_MUST_return_FALSE()
         {
             string badPassword = "senha";
             var badTest = new ValidateRegisterModel { Valid = false, Message = "Senha fraca! Mínimo de 8 caracteres" };
@@ -101,13 +101,13 @@ namespace CoupleCoinApiTest.Services.AuthServicesTests
             string badPassword7 = null;
             var badTest6and7 = new ValidateRegisterModel { Valid = false, Message = "Senha vazia!" };
 
-            var testPassword = _registerService.ValidatePassword(badPassword);
-            var testPassword2 = _registerService.ValidatePassword(badPassword2);
-            var testPassword3 = _registerService.ValidatePassword(badPassword3);
-            var testPassword4 = _registerService.ValidatePassword(badPassword4);
-            var testPassword5 = _registerService.ValidatePassword(badPassword5);
-            var testPassword6 = _registerService.ValidatePassword(badPassword6);
-            var testPassword7 = _registerService.ValidatePassword(badPassword7);
+            var testPassword = await _registerService.ValidatePassword(badPassword);
+            var testPassword2 = await _registerService.ValidatePassword(badPassword2);
+            var testPassword3 = await _registerService.ValidatePassword(badPassword3);
+            var testPassword4 = await _registerService.ValidatePassword(badPassword4);
+            var testPassword5 = await _registerService.ValidatePassword(badPassword5);
+            var testPassword6 = await _registerService.ValidatePassword(badPassword6);
+            var testPassword7 = await _registerService.ValidatePassword(badPassword7);
 
             Assert.Equal(badTest.Valid, testPassword.Valid);
             Assert.Equal(badTest.StatusCode, testPassword.StatusCode);
@@ -141,7 +141,7 @@ namespace CoupleCoinApiTest.Services.AuthServicesTests
 
         #region ValidateUser Method
         [Fact]
-        public void When_calling_the_ValidateUser_method_MUST_return_TRUE()
+        public async void When_calling_the_ValidateUser_method_MUST_return_TRUE()
         {
             mock.Setup(_ => _.GetUserByUserName(It.IsAny<string>())).Returns(new User());
             mock.Setup(_ => _.GetUserByEmail(It.IsAny<string>())).Returns(new User());
@@ -149,19 +149,19 @@ namespace CoupleCoinApiTest.Services.AuthServicesTests
             var testUser = userRM;
             testUser.Password = "Adff1@#$%$";
 
-            var testReturn = _registerService.ValidateUser(testUser);
+            var testReturn = await _registerService.ValidateUser(testUser);
 
             Assert.True(testReturn.Valid);
         }
 
-        public void When_calling_the_ValidateUser_method_MUST_return_FALSE()
+        public async void When_calling_the_ValidateUser_method_MUST_return_FALSE()
         {
             mock.Setup(_ => _.GetUserByUserName(It.IsAny<string>())).Returns(user);
             mock.Setup(_ => _.GetUserByEmail(It.IsAny<string>())).Returns(user);
 
             var testUser = userRM;
 
-            var testReturn = _registerService.ValidateUser(testUser);
+            var testReturn = await _registerService.ValidateUser(testUser);
 
             Assert.False(testReturn.Valid);
         }

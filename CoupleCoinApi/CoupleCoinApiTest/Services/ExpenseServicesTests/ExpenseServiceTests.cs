@@ -53,19 +53,19 @@ namespace CoupleCoinApiTest.Services.ExpenseServicesTests
 
         #region VerifyCouple method
         [Fact]
-        public void When_call_VerifyCouple_method_with_a_valid_couple_return_TRUE()
+        public async void When_call_VerifyCouple_method_with_a_valid_couple_return_TRUE()
         {
             var validETD = this.validETD;
 
             mockCoupleRepository.Setup(_ => _.GetActiveCoupleByTwoUserName(It.IsAny<string>(), It.IsAny<string>())).Returns(validCouple);
 
-            var methodToTest = _expenseService.VerifyCouple(validETD);
+            var methodToTest = await _expenseService.VerifyCouple(validETD);
 
             Assert.True(methodToTest.Valid);
         }
 
         [Fact]
-        public void When_call_VerifyCouple_method_with_a_invalid_couple_return_FALSE()
+        public async void When_call_VerifyCouple_method_with_a_invalid_couple_return_FALSE()
         {
             var ETDToTest1 = new ExpenseTypeDTO
             {
@@ -88,9 +88,9 @@ namespace CoupleCoinApiTest.Services.ExpenseServicesTests
 
             mockCoupleRepository.Setup(_ => _.GetActiveCoupleByTwoUserName(It.IsAny<string>(), It.IsAny<string>())).Returns(new Couple());
 
-            var coupleToVerify1 = _expenseService.VerifyCouple(ETDToTest1);
-            var coupleToVerify2 = _expenseService.VerifyCouple(ETDToTest2);
-            var coupleToVerify3 = _expenseService.VerifyCouple(ETDToTest3);
+            var coupleToVerify1 = await _expenseService.VerifyCouple(ETDToTest1);
+            var coupleToVerify2 = await _expenseService.VerifyCouple(ETDToTest2);
+            var coupleToVerify3 = await _expenseService.VerifyCouple(ETDToTest3);
 
             Assert.False(coupleToVerify1.Valid);
             Assert.Equal("Necessário dois usuários para o vínculo", coupleToVerify1.Message);

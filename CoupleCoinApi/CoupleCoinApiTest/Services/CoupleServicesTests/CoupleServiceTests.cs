@@ -36,12 +36,12 @@ namespace CoupleCoinApiTest.Services.CoupleServicesTests
 
         #region ValidateUserToCouple method
         [Fact]
-        public void When_call_ValidateUserToCouple_method_with_inactive_OR_inexistent_user_return_FALSE()
+        public async void When_call_ValidateUserToCouple_method_with_inactive_OR_inexistent_user_return_FALSE()
         {
             string userNameInexistent = "inexistentUser";
             mockUser.Setup(_ => _.GetActiveUserByUserName(It.IsAny<string>())).Returns(new User());
 
-            var userToCheck = _coupleService.ValidateUserToCouple(userNameInexistent);
+            var userToCheck = await _coupleService.ValidateUserToCouple(userNameInexistent);
 
             Assert.False(userToCheck.Valid);
             Assert.Equal("Usuário para colaboração inválido!", userToCheck.Message);
@@ -49,12 +49,12 @@ namespace CoupleCoinApiTest.Services.CoupleServicesTests
         }
 
         [Fact]
-        public void When_call_ValidateUserToCouple_method_with_VALID_user_return_TRUE()
+        public async void When_call_ValidateUserToCouple_method_with_VALID_user_return_TRUE()
         {
             string userNameValid = "Test";
             mockUser.Setup(_ => _.GetActiveUserByUserName(It.IsAny<string>())).Returns(validUser);
 
-            var userToCheck = _coupleService.ValidateUserToCouple(userNameValid);
+            var userToCheck = await _coupleService.ValidateUserToCouple(userNameValid);
 
             Assert.True(userToCheck.Valid);
         }
@@ -62,7 +62,7 @@ namespace CoupleCoinApiTest.Services.CoupleServicesTests
 
         #region VerifiyExistentCouple method
         [Fact]
-        public void When_call_VerifiyExistentCouple_method_with_existent_couple_return_FALSE()
+        public async void When_call_VerifiyExistentCouple_method_with_existent_couple_return_FALSE()
         {
             string userName1 = "Test";
             string userName2 = "Test2";
@@ -71,20 +71,20 @@ namespace CoupleCoinApiTest.Services.CoupleServicesTests
 
             mockCoupleRepository.Setup(_ => _.GetActiveCoupleByTwoUserName(It.IsAny<string>(), It.IsAny<string>())).Returns(coupleExistent);
 
-            var verifyCouple = _coupleService.VerifiyExistentCouple(userName1, userName2);
+            var verifyCouple = await _coupleService.VerifiyExistentCouple(userName1, userName2);
 
             Assert.False(verifyCouple.Valid);
             Assert.Equal("Usuários já vinculados!", verifyCouple.Message);
         }
 
-        public void When_call_VerifiyExistentCouple_method_with_not_existent_couple_return_TRUE()
+        public async void When_call_VerifiyExistentCouple_method_with_not_existent_couple_return_TRUE()
         {
             string userName1 = "Test";
             string UserName2 = "Test2";
 
             mockCoupleRepository.Setup(_ => _.GetActiveCoupleByTwoUserName(It.IsAny<string>(), It.IsAny<string>())).Returns(new Couple());
 
-            var verifyCouple = _coupleService.VerifiyExistentCouple(userName1, UserName2);
+            var verifyCouple = await _coupleService.VerifiyExistentCouple(userName1, UserName2);
 
             Assert.True(verifyCouple.Valid);
         }

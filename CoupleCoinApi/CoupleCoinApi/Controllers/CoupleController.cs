@@ -16,18 +16,22 @@ namespace CoupleCoinApi.Controllers
         [HttpPost]
         [Route("registerCouple")]
         [Authorize]
-        public IActionResult RegisterCouple(string userNameToCouple)
+        public async Task<IActionResult> RegisterCouple(string userNameToCouple)
         {
             if (string.IsNullOrEmpty(userNameToCouple))
                 return BadRequest("Usuário para colaboração não pode ser vazio!");
 
             var userName = User.Identity.Name;
 
-            var userIsValid = _coupleService.ValidateUserToCouple(userNameToCouple);
+            var userIsValidTask = _coupleService.ValidateUserToCouple(userNameToCouple);
+            var coupleExistsTask = _coupleService.VerifiyExistentCouple(userName, userNameToCouple);
+
+            var userIsValid = await userIsValidTask;
+            var coupleExists = await coupleExistsTask;
+
             if (!userIsValid.Valid)
                 return BadRequest(userIsValid.Message);
 
-            var coupleExists = _coupleService.VerifiyExistentCouple(userName, userNameToCouple);
             if (!coupleExists.Valid)
                 return BadRequest(coupleExists.Message);
 

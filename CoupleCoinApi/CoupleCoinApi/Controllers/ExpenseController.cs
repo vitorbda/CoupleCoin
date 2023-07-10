@@ -40,21 +40,25 @@ namespace CoupleCoinApi.Controllers
         [HttpPost]
         [Route("registerExpenseType")]
         [Authorize]
-        public IActionResult RegisterExpenseType([FromBody]ExpenseTypeDTO ETD)
+        public async Task<IActionResult> RegisterExpenseType([FromBody]ExpenseTypeDTO ETD)
         {
-            if (string.IsNullOrEmpty(ETD.Name) || ETD == null)
-                return BadRequest();
+            if (!ModelState.IsValid)
+                return BadRequest(ModelState);
 
             var verifyCouple = new ValidateRegisterModel { Valid = true };
             if (!string.IsNullOrEmpty(ETD.OwnerTwo))
             {
                 // Verifica se o 2° usuário está ativo e/ou existe
-                bool verifyUser = _userService.VerifyIfUserIsActiveByUsername(ETD.OwnerTwo);
+                var verifyUserTask = _userService.VerifyIfUserIsActiveByUsername(ETD.OwnerTwo);
+                var verifyCoupleTask = _expenseService.VerifyCouple(ETD);
+
+                var verifyUser = await verifyUserTask;
+                verifyCouple = await verifyCoupleTask;
+
                 if (verifyUser)
                     return NotFound("O segundo usuário não foi encontrado");
 
                 // Verifica se existe o vínculo de usuários
-                verifyCouple = _expenseService.VerifyCouple(ETD);
                 if (!verifyCouple.Valid)
                     return BadRequest(verifyCouple.Message);
             }

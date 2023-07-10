@@ -48,25 +48,25 @@ namespace CoupleCoinApiTest.Services.UserServicesTests
 
         #region VerifyIfUserIsActiveByUsername method
         [Fact]
-        public void When_call_VerifyIfUserIsActiveByUsername_with_valid_username_return_TRUE()
+        public async void When_call_VerifyIfUserIsActiveByUsername_with_valid_username_return_TRUE()
         {
             var username = "Test";
 
-            var testMethod = _userService.VerifyIfUserIsActiveByUsername(username);
+            var testMethod = await _userService.VerifyIfUserIsActiveByUsername(username);
 
             Assert.True(testMethod);
         }
 
         [Fact]
-        public void When_call_VerifyIfUserIsActiveByUsername_with_invalid_username_return_FALSE()
+        public async void When_call_VerifyIfUserIsActiveByUsername_with_invalid_username_return_FALSE()
         {
             var usernameFail = "TestFail";
             var usernameFail2 = "";
 
             mockUserRepository.Setup(_ => _.GetActiveUserByUserName(It.IsAny<string>())).Returns(new User());
 
-            var testMethod = _userService.VerifyIfUserIsActiveByUsername(usernameFail);
-            var testMethod2 = _userService.VerifyIfUserIsActiveByUsername(usernameFail2);
+            var testMethod = await _userService.VerifyIfUserIsActiveByUsername(usernameFail);
+            var testMethod2 = await _userService.VerifyIfUserIsActiveByUsername(usernameFail2);
 
             Assert.False(testMethod);
             Assert.False(testMethod2);
@@ -75,25 +75,25 @@ namespace CoupleCoinApiTest.Services.UserServicesTests
 
         #region VerifyPassword method
         [Fact]
-        public void When_call_VerifyPassword_method_with_valid_parameters_return_TRUE()
+        public async void When_call_VerifyPassword_method_with_valid_parameters_return_TRUE()
         {
             var username = "Test";
             var password = "senhaBoa#123";
 
-            var testMethod = _userService.VerifyPassword(password, username);
+            var testMethod = await _userService.VerifyPassword(password, username);
 
             Assert.True(testMethod);
         }
 
         [Fact]
-        public void When_call_VerifyPassword_method_with_invalid_parameters_return_FALSE()
+        public async void When_call_VerifyPassword_method_with_invalid_parameters_return_FALSE()
         {
             var username = "Test";
             var voidUsername = "";
             var password = "123";
 
-            var testMethod = _userService.VerifyPassword(password, voidUsername);
-            var testMethod2 = _userService.VerifyPassword(password, username);
+            var testMethod = await _userService.VerifyPassword(password, voidUsername);
+            var testMethod2 = await _userService.VerifyPassword(password, username);
 
             Assert.False(testMethod);
             Assert.False(testMethod2);
@@ -103,23 +103,23 @@ namespace CoupleCoinApiTest.Services.UserServicesTests
 
         #region VerifyEmail method
         [Fact]
-        public void When_call_VerifyEmail_method_with_new_email_NOT_USED_return_TRUE()
+        public async void When_call_VerifyEmail_method_with_new_email_NOT_USED_return_TRUE()
         {
             var emailTest = "Test@test.com";
 
             mockUserRepository.Setup(_ => _.GetUserByEmail(It.IsAny<string>())).Returns(new User());
 
-            var testMethod = _userService.VerifyEmail(emailTest);
+            var testMethod = await _userService.VerifyEmail(emailTest);
 
             Assert.True(testMethod);
         }
 
         [Fact]
-        public void When_call_VerifyEmail_method_with_new_email_IS_USE_return_FALSE()
+        public async void When_call_VerifyEmail_method_with_new_email_IS_USE_return_FALSE()
         {
             var emailTest = "Test@test.com";
 
-            var testMethod = _userService.VerifyEmail(emailTest);
+            var testMethod = await _userService.VerifyEmail(emailTest);
 
             Assert.False(testMethod);
         }

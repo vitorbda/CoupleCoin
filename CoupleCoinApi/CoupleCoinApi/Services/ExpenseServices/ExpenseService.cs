@@ -54,7 +54,7 @@ namespace CoupleCoinApi.Services.ExpenseServices
             return expenseTypeCreated;
         }
 
-        public ValidateRegisterModel VerifyCouple(ExpenseTypeDTO ETD)
+        public async Task<ValidateRegisterModel> VerifyCouple(ExpenseTypeDTO ETD)
         {
             var valid = new ValidateRegisterModel { Valid = false };
 

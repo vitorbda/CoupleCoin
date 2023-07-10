@@ -26,7 +26,7 @@ namespace CoupleCoinApi.Services.AuthServices
             return _userRepository.CreateUser(userToReturn);
         }
 
-        public ValidateRegisterModel ValidatePassword(string password)
+        public async Task<ValidateRegisterModel> ValidatePassword(string password)
         {
             var valid = new ValidateRegisterModel { Valid = false };
 
@@ -88,9 +88,9 @@ namespace CoupleCoinApi.Services.AuthServices
             return userToReturn;
         }
 
-        public ValidateRegisterModel ValidateUser(RegisterModel user)
+        public async Task<ValidateRegisterModel> ValidateUser(RegisterModel user)
         {
-            var validatePassword = ValidatePassword(user.Password);
+            var validatePassword = await ValidatePassword(user.Password);
             if (!validatePassword.Valid)
                 return new ValidateRegisterModel { Valid = false, Message = validatePassword.Message };
 
