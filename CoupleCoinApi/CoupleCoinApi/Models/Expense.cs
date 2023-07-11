@@ -7,7 +7,7 @@ namespace CoupleCoinApi.Models
         [Required]
         public int Id { get; set; }
         [Required]
-        public float ExpenseValue { get; set; }
+        public double ExpenseValue { get; set; }
         public ExpenseType? Type { get; set; }
         [StringLength(250)]
         public string? Description { get; set; }

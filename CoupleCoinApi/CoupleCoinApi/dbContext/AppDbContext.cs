@@ -13,5 +13,7 @@ namespace CoupleCoinApi.dbContext
         public DbSet<User> User { get; set; }
         public DbSet<Couple> Couple { get; set; }
         public DbSet<ExpenseType> ExpenseType { get; set; }
+        public DbSet<Expense> Expense { get; set; }
+        public DbSet<ExpenseXOwner> ExpenseXOwner { get; set; }
     }
 }
