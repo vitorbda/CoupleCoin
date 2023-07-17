@@ -6,11 +6,14 @@ using CoupleCoinApi.Services.AuthServices;
 using CoupleCoinApi.Services.AuthServices.Interfaces;
 using CoupleCoinApi.Services.CoupleServices;
 using CoupleCoinApi.Services.CoupleServices.Interfaces;
+using CoupleCoinApi.Services.ExpenseTypeServices;
+using CoupleCoinApi.Services.ExpenseTypeServices.Interfaces;
 using CoupleCoinApi.Services.UserServices;
 using CoupleCoinApi.Services.UserServices.Interfaces;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.IdentityModel.Tokens;
+using Microsoft.OpenApi.Models;
 using System.Text;
 
 var builder = WebApplication.CreateBuilder(args);
@@ -52,12 +55,38 @@ builder.Services.AddScoped<IRegisterService, RegisterService>();
 builder.Services.AddScoped<ICoupleService, CoupleService>();
 builder.Services.AddScoped<ICoupleRepository, CoupleRepository>();
 builder.Services.AddScoped<IUserService, UserService>();
+builder.Services.AddScoped<IExpenseTypeRepository, ExpenseTypeRepository>();
+builder.Services.AddScoped<IExpenseTypeService, ExpenseTypeService>();
 
 #endregion
 
 // Learn more about configuring Swagger/OpenAPI at https://aka.ms/aspnetcore/swashbuckle
 builder.Services.AddEndpointsApiExplorer();
-builder.Services.AddSwaggerGen();
+builder.Services.AddSwaggerGen(c =>
+{
+    var securityScheme = new OpenApiSecurityScheme
+    {
+        Name = "JWT Authentication",
+        Description = "Enter JWT token",
+        In = ParameterLocation.Header,
+        Type = SecuritySchemeType.Http,
+        Scheme = "bearer",
+        BearerFormat = "JWT",
+        Reference = new OpenApiReference
+        {
+            Type = ReferenceType.SecurityScheme,
+            Id = JwtBearerDefaults.AuthenticationScheme
+        }
+    };
+
+    c.AddSecurityDefinition(JwtBearerDefaults.AuthenticationScheme, securityScheme);
+
+    // Aplica o esquema de segurança JWT a todos os endpoints
+    c.AddSecurityRequirement(new OpenApiSecurityRequirement
+    {
+        { securityScheme, new string[] { } }
+    });
+});
 
 var app = builder.Build();
 

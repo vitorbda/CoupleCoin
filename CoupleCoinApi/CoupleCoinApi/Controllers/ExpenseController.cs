@@ -1,10 +1,7 @@
 ﻿using CoupleCoinApi.DTO;
-using CoupleCoinApi.Models;
-using CoupleCoinApi.Repositories.Interfaces;
 using CoupleCoinApi.Services.CoupleServices.Interfaces;
 using CoupleCoinApi.Services.ExpenseServices.Interfaces;
 using CoupleCoinApi.Services.ExpenseTypeServices.Interfaces;
-using CoupleCoinApi.Services.UserServices.Interfaces;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 
@@ -65,9 +62,9 @@ namespace CoupleCoinApi.Controllers
         }
 
         [HttpGet]
-        [Route("getExpense")]
+        [Route("get/{id}")]
         [Authorize]
-        public IActionResult GetExpense(int id)
+        public IActionResult Get(int id)
         {            
             throw new NotImplementedException();
         }        

@@ -6,9 +6,10 @@ using Microsoft.AspNetCore.Mvc;
 
 namespace CoupleCoinApi.Controllers
 {
-    [Route("v1/expenseType")]
+    [Route("v1/expensetype")]
     public class ExpenseTypeController : Controller
     {
+        #region Constructor
         private readonly IExpenseTypeService _expenseTypeService;
         private readonly ICoupleService _coupleService;
         public ExpenseTypeController(IExpenseTypeService expenseTypeService, 
@@ -17,7 +18,8 @@ namespace CoupleCoinApi.Controllers
             _expenseTypeService = expenseTypeService;
             _coupleService = coupleService;
         }
-
+        #endregion
+        
         [HttpPost]
         [Route("post")]
         [Authorize]
@@ -38,11 +40,6 @@ namespace CoupleCoinApi.Controllers
                 return StatusCode(500);
 
             return Created("/", "");
-        }
-
-        public IActionResult Index()
-        {
-            return View();
         }
     }
 }

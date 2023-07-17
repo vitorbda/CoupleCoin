@@ -40,8 +40,6 @@ namespace CoupleCoinApi.Controllers
                 return StatusCode(500);
 
             return Created("/", "Vínculo cirado com sucesso!");
-        }
-
-        
+        }        
     }
 }
