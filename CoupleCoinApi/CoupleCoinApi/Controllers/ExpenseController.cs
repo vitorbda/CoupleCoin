@@ -1,7 +1,9 @@
 ﻿using CoupleCoinApi.DTO;
 using CoupleCoinApi.Models;
 using CoupleCoinApi.Repositories.Interfaces;
+using CoupleCoinApi.Services.CoupleServices.Interfaces;
 using CoupleCoinApi.Services.ExpenseServices.Interfaces;
+using CoupleCoinApi.Services.ExpenseTypeServices.Interfaces;
 using CoupleCoinApi.Services.UserServices.Interfaces;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
@@ -13,21 +15,23 @@ namespace CoupleCoinApi.Controllers
     {
         #region Constructor
         private readonly IExpenseService _expenseService;
-        private readonly IUserService _userService;
-        private readonly IExpenseRepository _expenseRepository;
+        private readonly ICoupleService _coupleService;
+        private readonly IExpenseTypeService _expenseTypeService;
 
-        public ExpenseController(IExpenseService expenseService, IUserService userService, IExpenseRepository expenseRepository)
+        public ExpenseController(IExpenseService expenseService,
+                                    ICoupleService coupleService,
+                                    IExpenseTypeService expenseTypeService)
         {
             _expenseService = expenseService;
-            _userService = userService;
-            _expenseRepository = expenseRepository;
+            _coupleService = coupleService;
+            _expenseTypeService = expenseTypeService;
         }
         #endregion
 
         [HttpPost]
-        [Route("registerExpense")]
+        [Route("post")]
         [Authorize]
-        public async Task<IActionResult> RegisterExpense([FromBody]ExpenseDTO expense)
+        public async Task<IActionResult> PostExpense([FromBody]ExpenseDTO expense)
         {
             if (!ModelState.IsValid)
                 return BadRequest(ModelState);
@@ -36,12 +40,12 @@ namespace CoupleCoinApi.Controllers
 
             if (!string.IsNullOrEmpty(expense.UsernameTwo))
             {
-                var verifyCouple = await _expenseService.VerifyCouple(expense.UsernameOne, expense.UsernameTwo);
+                var verifyCouple = await _coupleService.VerifiyExistentCouple(expense.UsernameOne, expense.UsernameTwo);
                 if (!verifyCouple.Valid)
                     return BadRequest(verifyCouple.Message);
             }
 
-            var verifyExpenseType = _expenseService.VerifyExpenseType(expense.ExpenseTypeId, expense.UsernameOne,expense.UsernameTwo);
+            var verifyExpenseType = _expenseTypeService.VerifyExpenseType(expense.ExpenseTypeId, expense.UsernameOne,expense.UsernameTwo);
             if (!verifyExpenseType.Valid)
             {
                 var statusCode = verifyExpenseType.StatusCode;
@@ -66,28 +70,6 @@ namespace CoupleCoinApi.Controllers
         public IActionResult GetExpense(int id)
         {            
             throw new NotImplementedException();
-        }
-
-        [HttpPost]
-        [Route("registerExpenseType")]
-        [Authorize]
-        public async Task<IActionResult> RegisterExpenseType([FromBody]ExpenseTypeDTO ETD)
-        {
-            if (!ModelState.IsValid)
-                return BadRequest(ModelState);
-
-            if (!string.IsNullOrEmpty(ETD.OwnerTwo))
-            {
-                var verifyCouple = await _expenseService.VerifyCouple(ETD.Owner, ETD.OwnerTwo);
-                if (!verifyCouple.Valid)
-                    return BadRequest(verifyCouple.Message);
-            }
-
-            var expenseTypeCreated = _expenseService.RegisterExpenseType(ETD);
-            if (!expenseTypeCreated)
-                return StatusCode(500);
-
-            return Created("/", "");
-        }
+        }        
     }
 }

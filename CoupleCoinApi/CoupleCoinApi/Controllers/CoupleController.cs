@@ -32,7 +32,7 @@ namespace CoupleCoinApi.Controllers
             if (!userIsValid.Valid)
                 return BadRequest(userIsValid.Message);
 
-            if (!coupleExists.Valid)
+            if (coupleExists.Valid)
                 return BadRequest(coupleExists.Message);
 
             var coupleWasCreated = _coupleService.CreateCouple(userName, userNameToCouple);

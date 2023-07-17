@@ -1,6 +1,8 @@
 ﻿using CoupleCoinApi.Models;
 using CoupleCoinApi.Repositories.Interfaces;
 using CoupleCoinApi.Services.CoupleServices.Interfaces;
+using CoupleCoinApi.Services.UserServices.Interfaces;
+using XAct.Users;
 
 namespace CoupleCoinApi.Services.CoupleServices
 {
@@ -9,11 +11,14 @@ namespace CoupleCoinApi.Services.CoupleServices
         #region Constructor
         private readonly IUserRepository _userRepository;
         private readonly ICoupleRepository _coupleRepository;
+        private readonly IUserService _userService;
         public CoupleService(IUserRepository userRepository, 
-                                ICoupleRepository coupleRepository) 
+                                ICoupleRepository coupleRepository, 
+                                IUserService userService) 
         { 
             _userRepository = userRepository;
             _coupleRepository = coupleRepository;
+            _userService = userService;
         }
         #endregion
 
@@ -46,18 +51,32 @@ namespace CoupleCoinApi.Services.CoupleServices
             return valid;
         }
 
-        public async Task<ValidateRegisterModel> VerifiyExistentCouple(string userName1, string userName2)
+        public async Task<ValidateRegisterModel> VerifiyExistentCouple(string username, string usernametwo)
         {
             var valid = new ValidateRegisterModel { Valid = false };
-            var couple = _coupleRepository.GetActiveCoupleByTwoUserName(userName1, userName2);
 
-            if (couple == null || string.IsNullOrEmpty(couple.Id.ToString()))
+            if (string.IsNullOrEmpty(usernametwo) || string.IsNullOrEmpty(username))
             {
-                valid.Valid = true;
+                valid.Message = "Necessário dois usuários para o vínculo";
                 return valid;
             }
 
-            valid.Message = "Usuários já vinculados!";
+            var verifyUser = await _userService.VerifyIfUserIsActiveByUsername(usernametwo);
+            if (!verifyUser)
+            {
+                valid.Message = "O segundo usuário não foi encontrado";
+                return valid;
+            }
+
+            var coupleToVerify = _coupleRepository.GetActiveCoupleByTwoUserName(username, usernametwo);
+            if (coupleToVerify == null || coupleToVerify.User1 == null)
+            {
+                valid.Message = "Vínculo de usuários não encontrado";
+                return valid;
+            }
+
+            valid.Message = "Vínculo de usuários existe!";
+            valid.Valid = true;
             return valid;
         }
     }

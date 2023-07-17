@@ -1,7 +1,9 @@
-﻿using CoupleCoinApi.Models;
+﻿using CoupleCoinApi.DTO;
+using CoupleCoinApi.Models;
 using CoupleCoinApi.Repositories.Interfaces;
 using CoupleCoinApi.Services.CoupleServices;
 using CoupleCoinApi.Services.CoupleServices.Interfaces;
+using CoupleCoinApi.Services.UserServices.Interfaces;
 using Moq;
 using System;
 using System.Collections.Generic;
@@ -16,6 +18,14 @@ namespace CoupleCoinApiTest.Services.CoupleServicesTests
         #region Initialize
         private readonly Mock<IUserRepository> mockUser = new Mock<IUserRepository>();
         private readonly Mock<ICoupleRepository> mockCoupleRepository = new Mock<ICoupleRepository>();
+        private readonly Mock<IUserService> mockUserService = new Mock<IUserService>();
+        private readonly Mock<IUserRepository> mockUserRepository = new Mock<IUserRepository>();
+        private readonly Couple validCouple = new Couple
+        {
+            IsActive = true,
+            User1 = new User(),
+            User2 = new User()
+        };
         private readonly CoupleService _coupleService;
         private readonly User validUser = new User
         {
@@ -30,7 +40,7 @@ namespace CoupleCoinApiTest.Services.CoupleServicesTests
         };
         public CoupleServiceTests() 
         {
-            _coupleService = new CoupleService(mockUser.Object, mockCoupleRepository.Object);
+            _coupleService = new CoupleService(mockUser.Object, mockCoupleRepository.Object, mockUserService.Object);
         }
         #endregion
 
@@ -67,26 +77,51 @@ namespace CoupleCoinApiTest.Services.CoupleServicesTests
             string userName1 = "Test";
             string userName2 = "Test2";
 
-            var coupleExistent = new Couple { Id = 1 };
+            mockCoupleRepository.Setup(_ => _.GetActiveCoupleByTwoUserName(It.IsAny<string>(), It.IsAny<string>())).Returns(validCouple);
+            mockUserRepository.Setup(x => x.GetActiveUserByUserName(It.IsAny<string>())).Returns(validUser);
+            mockUserService.Setup(x => x.VerifyIfUserIsActiveByUsername(It.IsAny<string>())).ReturnsAsync(true);
 
-            mockCoupleRepository.Setup(_ => _.GetActiveCoupleByTwoUserName(It.IsAny<string>(), It.IsAny<string>())).Returns(coupleExistent);
+            var methodToTest = await _coupleService.VerifiyExistentCouple(userName1, userName2);
 
-            var verifyCouple = await _coupleService.VerifiyExistentCouple(userName1, userName2);
-
-            Assert.False(verifyCouple.Valid);
-            Assert.Equal("Usuários já vinculados!", verifyCouple.Message);
+            Assert.True(methodToTest.Valid);
         }
 
         public async void When_call_VerifiyExistentCouple_method_with_not_existent_couple_return_TRUE()
         {
-            string userName1 = "Test";
-            string UserName2 = "Test2";
+
+            var usernameTest1 = "Test";
+            var usernameTwoTest1 = "Test";
+
+            var usernameTest2 = "Test";
+            var usernameTwoTest2 = "";
+
+            var usernameTest3 = "";
+            var usernameTwoTest3 = "Test";
+
+            var usernameTest4 = "Test";
+            var usernameTwoTest4 = "Test2";
 
             mockCoupleRepository.Setup(_ => _.GetActiveCoupleByTwoUserName(It.IsAny<string>(), It.IsAny<string>())).Returns(new Couple());
+            mockUserRepository.Setup(x => x.GetActiveUserByUserName(It.IsAny<string>())).Returns(new User());
 
-            var verifyCouple = await _coupleService.VerifiyExistentCouple(userName1, UserName2);
+            var coupleToVerify1 = await _coupleService.VerifiyExistentCouple(usernameTest1, usernameTwoTest1);
+            var coupleToVerify2 = await _coupleService.VerifiyExistentCouple(usernameTest2, usernameTwoTest2);
+            var coupleToVerify3 = await _coupleService.VerifiyExistentCouple(usernameTest3, usernameTwoTest3);
 
-            Assert.True(verifyCouple.Valid);
+            mockUserRepository.Setup(x => x.GetActiveUserByUserName(It.IsAny<string>())).Returns(validUser);
+            var coupleToVerify4 = await _coupleService.VerifiyExistentCouple(usernameTest4, usernameTwoTest4);
+
+            Assert.False(coupleToVerify1.Valid);
+            Assert.Equal("Necessário dois usuários para o vínculo", coupleToVerify1.Message);
+
+            Assert.False(coupleToVerify2.Valid);
+            Assert.Equal("Necessário dois usuários para o vínculo", coupleToVerify2.Message);
+
+            Assert.False(coupleToVerify3.Valid);
+            Assert.Equal("O segundo usuário não foi encontrado", coupleToVerify3.Message);
+
+            Assert.False(coupleToVerify4.Valid);
+            Assert.Equal("Vínculo de usuários não encontrado", coupleToVerify4.Message);
         }
         #endregion
     }
